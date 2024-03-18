@@ -33,7 +33,6 @@ resetButton.addEventListener('click', init);
 init();
 
 function init() {
-  renderBoard();
   renderPieces();
   currentPlayer = 1;
   updatePlayerDisplay();
@@ -41,10 +40,30 @@ function init() {
 
 function renderBoard() {}
 function renderPieces() {
-  lightPieces.forEach((piece) => piece.remove);
-  darkPieces.forEach((piece) => piece.remove);
+  //clearing existing pieces to set the board
+  document
+    .querySelectorAll('.square.black > div')
+    .forEach((div) => div.remove());
+  board.forEach((row, rowIdx) => {
+    row.forEach((cell, cellIdx) => {
+      const squareIdx = rowIdx * 8 + cellIdx;
+      const square = squares[squareIdx];
+
+      if (cell !== 0) {
+        // If the cell is not empty
+        const pieceElement = document.createElement('div');
+        pieceElement.className = 'piece ' + (cell === 1 ? 'light' : 'dark'); // Add both 'piece' and 'light' or 'dark'
+        pieceElement.innerHTML = `<img src="images/${
+          cell === 1 ? 'light' : 'dark'
+        }-piece.png" alt="piece">`;
+        square.appendChild(pieceElement); // Append the new piece to the square
+      }
+    });
+  });
 }
 
+// update display to say its ...player ... 's turn
 function updatePlayerDisplay() {
   playerDisplay.textContent = currentPlayer === 1 ? 'Player 1' : 'Player 2';
+  // playerDisplay.style.color = PLAYER_COLORS[`player${currentPlayer}`];
 }
