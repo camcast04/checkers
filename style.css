@@ -57,6 +57,13 @@ h1 {
   align-items: center;
 }
 
+.light img {
+  width: 90%;
+  height: 90%;
+  align-items: center;
+  object-fit: contain;
+}
+
 .white {
   background-color: #e7edfa;
 }
