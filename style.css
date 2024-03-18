@@ -4,7 +4,21 @@ light-pieces: #f4f7fa
 light-check: #e7edfa
 dark-check: #b5c0da
 move-indicator: #b5a3ff
-page-background: #f4f7fa */
+page-background: #f4f7fa
+
+
+la-circle [&#xf111;]
+<i class="las la-circle"></i>
+<i class="lar la-circle"></i>
+
+--
+king me dog 
+<i class="las la-times-circle"></i>
+<i class="lar la-times-circle"></i>
+
+
+
+*/
 @import url('https://fonts.googleapis.com/css2?family=Pattaya&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Varela+Round&display=swap');
 
 body {
@@ -18,7 +32,7 @@ body {
 }
 
 h1 {
-  margin-bottom: 80px;
+  margin-bottom: 70px;
   align-items: center;
   font-family: 'Pattaya', sans-serif;
   font-weight: 400;
