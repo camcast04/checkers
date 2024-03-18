@@ -16,7 +16,8 @@ let currentPlayer = 1;
 let possibleMoves = [];
 
 /*----- cached elements  -----*/
-
+const lightPieces = document.querySelectorAll('.light');
+const darkPieces = document.querySelectorAll('.dark');
 /*----- event listeners -----*/
 
 /*----- functions -----*/
