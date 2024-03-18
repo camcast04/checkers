@@ -5,14 +5,14 @@ const PLAYER_COLORS = {
 };
 /*----- state variables -----*/
 const board = [
-  [0, 1, 0, 1, 0, 1, 0, 1],
-  [1, 0, 1, 0, 1, 0, 1, 0],
-  [0, 1, 0, 1, 0, 1, 0, 1],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [2, 0, 2, 0, 2, 0, 2, 0],
-  [0, 2, 0, 2, 0, 2, 0, 2],
-  [2, 0, 2, 0, 2, 0, 2, 0],
+  [null, 1, null, 1, null, 1, null, 1],
+  [1, null, 1, null, 1, null, 1, null],
+  [null, 1, null, 1, null, 1, null, 1],
+  [null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null],
+  [2, null, 2, null, 2, null, 2, null],
+  [null, 2, null, 2, null, 2, null, 2],
+  [2, null, 2, null, 2, null, 2, null],
 ];
 
 let currentPlayer = 1;
@@ -49,14 +49,18 @@ function renderPieces() {
       const squareIdx = rowIdx * 8 + cellIdx;
       const square = squares[squareIdx];
 
-      if (cell !== 0) {
-        // If the cell is not empty
+      // checking if cell is empty
+      if (cell !== null) {
+        // creating new div element that will represent a piece on board
         const pieceElement = document.createElement('div');
+        //setting class for player 1 or player 2  (player1 will be light and 2 dark)
         pieceElement.className = 'piece ' + (cell === 1 ? 'light' : 'dark'); // Add both 'piece' and 'light' or 'dark'
+        //adding image of pice
         pieceElement.innerHTML = `<img src="images/${
           cell === 1 ? 'light' : 'dark'
         }-piece.png" alt="piece">`;
-        square.appendChild(pieceElement); // Append the new piece to the square
+        // adding the new element to the square on the board
+        square.appendChild(pieceElement);
       }
     });
   });
