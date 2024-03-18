@@ -5,3 +5,42 @@ light-check: #e7edfa
 dark-check: #b5c0da
 move-indicator: #b5a3ff
 page-background: #f4f7fa */
+body {
+  background-color: #f4f7fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: #1f1717;
+}
+
+#gameboard {
+  width: 45vw;
+  height: 45vw;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.square {
+  width: 12.5%;
+  height: 12.5%;
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.white {
+  background-color: #e7edfa;
+}
+.black {
+  background-color: #b5c0da;
+}
+
+@media (min-width: 600px) {
+  .gameboard {
+    width: 600px;
+    height: 600px;
+  }
+}
