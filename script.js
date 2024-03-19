@@ -1,5 +1,3 @@
-const { all } = require('axios');
-
 /*----- constants -----*/
 const PLAYER_COLORS = {
   player1: '#f4f7fa',
@@ -48,6 +46,15 @@ function addSquareEventListener() {
 init();
 
 function init() {
+  resetBoard();
+  renderPieces();
+  currentPlayer = 1;
+  updatePlayerDisplay();
+  // addSquareEventListener();
+}
+
+function resetBoard() {
+  // Resets the game board to its initial state
   board = [
     [null, 1, null, 1, null, 1, null, 1],
     [1, null, 1, null, 1, null, 1, null],
@@ -58,17 +65,13 @@ function init() {
     [null, 2, null, 2, null, 2, null, 2],
     [2, null, 2, null, 2, null, 2, null],
   ];
-  renderPieces();
-  currentPlayer = 1;
-  updatePlayerDisplay();
-  // addSquareEventListener();
 }
-
-function renderBoard() {}
 
 function renderPieces() {
   const allPieces = document.querySelectorAll('.piece');
   allPieces.forEach((piece) => piece.remove);
+
+  // Loops through the board array to place pieces according to the game state
   board.forEach((row, rowIdx) => {
     row.forEach((cell, cellIdx) => {
       if (cell !== null) {
@@ -114,22 +117,6 @@ function renderPieces() {
   });
 }
 
-// function handleSquareClick(e) {
-//   const clickedSquare = e.target.closest('.square');
-//   if (!clickedSquare) return; // Exit if no square was clicked.
-
-//   const squareIndex = Array.from(squares).indexOf(clickedSquare);
-//   const row = Math.floor(squareIndex / 8);
-//   const col = squareIndex % 8;
-
-//   if (board[row][col] === currentPlayer) {
-//     // Highlight the square to show it's selected.
-//     highlightSquare(clickedSquare);
-//     // Calculate and highlight possible moves.
-//     showPossibleMoves(row, col);
-//   }
-// }
-
 function handleDragStart(e) {
   if (!e.target.className.includes('piece')) return;
   e.dataTransfer.setData('text/plain', e.target.dataset.position);
@@ -137,7 +124,7 @@ function handleDragStart(e) {
 }
 
 function handleDragOver(e) {
-  e.preventDefault(); // Necessary to allow dropping
+  e.preventDefault(); // Necessary to allow dropping / prevents default behavior
 }
 
 function handleDrop(e) {
@@ -271,29 +258,29 @@ function getMoveDirections(piece) {
   }
 }
 
-// function executeMove(fromRow, fromCol, toRow, toCol) {
-//   // Move the piece
-//   board[toRow][toCol] = board[fromRow][fromCol];
-//   board[fromRow][fromCol] = null;
+function executeMove(fromRow, fromCol, toRow, toCol) {
+  // Move the piece
+  board[toRow][toCol] = board[fromRow][fromCol];
+  board[fromRow][fromCol] = null;
 
-//   // Handle capture
-//   if (Math.abs(fromRow - toRow) === 2) {
-//     const middleRow = (fromRow + toRow) / 2;
-//     const middleCol = (fromCol + toCol) / 2;
-//     board[middleRow][middleCol] = null; // Remove the captured piece
-//   }
+  // Handle capture
+  if (Math.abs(fromRow - toRow) === 2) {
+    const middleRow = (fromRow + toRow) / 2;
+    const middleCol = (fromCol + toCol) / 2;
+    board[middleRow][middleCol] = null; // Remove the captured piece
+  }
 
-//   // Check for and handle kinging
-//   kingPieces(toRow, toCol);
+  // Check for and handle kinging
+  kingPieces(toRow, toCol);
 
-//   // Switch players
-//   currentPlayer = currentPlayer === 1 ? 2 : 1;
+  // Switch players
+  currentPlayer = currentPlayer === 1 ? 2 : 1;
 
-//   // Update the board and player display
-//   renderPieces();
-//   updatePlayerDisplay();
-//   clearHighlights(); // remove move highlights
-// }
+  // Update the board and player display
+  renderPieces();
+  updatePlayerDisplay();
+  clearHighlights(); // remove move highlights
+}
 
 function checkSimpleMove(row, col, dir) {
   const newRow = row + dir.row;
