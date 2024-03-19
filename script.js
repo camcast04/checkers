@@ -5,7 +5,7 @@ const PLAYER_COLORS = {
 };
 
 /*----- state variables -----*/
-const board = [
+let board = [
   [null, 1, null, 1, null, 1, null, 1],
   [1, null, 1, null, 1, null, 1, null],
   [null, 1, null, 1, null, 1, null, 1],
@@ -16,7 +16,10 @@ const board = [
   [2, null, 2, null, 2, null, 2, null],
 ];
 
+// Switch players
 let currentPlayer = 1;
+currentPlayer = currentPlayer === 1 ? 2 : 1;
+
 // let possibleMoves = [];
 
 /*----- cached elements  -----*/
@@ -43,7 +46,6 @@ function addSquareEventListener() {
 }
 
 /*----- functions -----*/
-init();
 
 function init() {
   resetBoard();
@@ -53,8 +55,10 @@ function init() {
   // addSquareEventListener();
 }
 
+document.addEventListener('DOMContentLoaded', init);
+
 function resetBoard() {
-  // Resets the game board to its initial state
+  // Properly re-initialize the board for a new game
   board = [
     [null, 1, null, 1, null, 1, null, 1],
     [1, null, 1, null, 1, null, 1, null],
@@ -68,8 +72,9 @@ function resetBoard() {
 }
 
 function renderPieces() {
-  const allPieces = document.querySelectorAll('.piece');
-  allPieces.forEach((piece) => piece.remove);
+  squares.forEach((square) => {
+    while (square.firstChild) square.removeChild(square.firstChild);
+  });
 
   // Loops through the board array to place pieces according to the game state
   board.forEach((row, rowIdx) => {
@@ -145,39 +150,6 @@ function handleDragEnd(e) {
   renderPieces();
 }
 
-function executeMove(fromRow, fromCol, toRow, toCol) {
-  const piece = board[fromRow][fromCol];
-  const isCaptureMove = Math.abs(fromRow - toRow) === 2;
-
-  // Validate move
-  if (!isValidMove(fromRow, fromCol, toRow, toCol, piece, isCaptureMove)) {
-    console.log('Invalid move');
-    return; // Early return if the move is invalid
-  }
-
-  // Execute move
-  board[toRow][toCol] = board[fromRow][fromCol]; // Move the piece
-  board[fromRow][fromCol] = null; // Clear the original square
-
-  // Handle capture
-  if (isCaptureMove) {
-    const middleRow = (fromRow + toRow) / 2;
-    const middleCol = (fromCol + toCol) / 2;
-    board[middleRow][middleCol] = null; // Remove the captured piece
-  }
-
-  // Kinging
-  kingPieces(toRow, toCol);
-
-  // Switch players
-  currentPlayer = currentPlayer === 1 ? 2 : 1;
-
-  // Update the board and player display
-  renderPieces();
-  updatePlayerDisplay();
-  clearHighlights(); // Function to remove move highlights, if implemented
-}
-
 function isValidMove(fromRow, fromCol, toRow, toCol, piece, isCaptureMove) {
   // Check if moving on a diagonal
   if (Math.abs(fromRow - toRow) !== Math.abs(fromCol - toCol)) return false;
@@ -213,15 +185,12 @@ function clearHighlights() {
     square.classList.remove('highlighted');
   });
 }
-
 function showPossibleMoves(row, col) {
   const piece = board[row][col];
   const directions = getMoveDirections(piece);
 
-  //clearing highlighted squares
-  clearHighlightSquare();
+  clearHighlights(); // Correct function name
 
-  //checking move directions
   directions.forEach((dir) => {
     checkSimpleMove(row, col, dir);
     checkCapturingMove(row, col, dir);
@@ -338,6 +307,5 @@ function kingPieces(row, col) {
 
 // function to update display message to say its ...player ... 's turn
 function updatePlayerDisplay() {
-  playerDisplay.textContent = currentPlayer === 1 ? 'Player 1' : 'Player 2';
-  // playerDisplay.style.color = PLAYER_COLORS[`player${currentPlayer}`];
+  playerDisplay.textContent = `Player ${currentPlayer}`;
 }
