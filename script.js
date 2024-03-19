@@ -39,27 +39,49 @@ function init() {
 }
 
 function renderBoard() {}
+
 function renderPieces() {
-  //clearing existing pieces to set the board
+  //removing pieces to render
   document
     .querySelectorAll('.square.black > div')
     .forEach((div) => div.remove());
   board.forEach((row, rowIdx) => {
     row.forEach((cell, cellIdx) => {
+      // calculating square index based on row and column
       const squareIdx = rowIdx * 8 + cellIdx;
+      //get square element from node list (cached above)
       const square = squares[squareIdx];
 
-      // checking if cell is empty
       if (cell !== null) {
-        // creating new div element that will represent a piece on board
+        //create element for piece image
         const pieceElement = document.createElement('div');
-        //setting class for player 1 or player 2  (player1 will be light and 2 dark)
-        pieceElement.className = 'piece ' + (cell === 1 ? 'light' : 'dark'); // Add both 'piece' and 'light' or 'dark'
-        //adding image of pice
-        pieceElement.innerHTML = `<img src="images/${
-          cell === 1 ? 'light' : 'dark'
-        }-piece.png" alt="piece">`;
-        // adding the new element to the square on the board
+        let pieceType;
+        let imageFile;
+
+        // Determine the piece type and corresponding image file based on the cell's value.
+        switch (cell) {
+          case 1:
+            pieceType = 'light';
+            imageFile = 'light-piece.png';
+            break;
+          case 2:
+            pieceType = 'dark';
+            imageFile = 'dark-piece.png';
+            break;
+          case 3: // kinged
+            pieceType = 'light king';
+            imageFile = 'king-light.png';
+            break;
+          case 4: // kinged
+            pieceType = 'dark king';
+            imageFile = 'king-dark.png';
+            break;
+        }
+
+        // Set the class of the piece element to include both 'piece' and its specific type ('light', 'dark', 'light king', 'dark king').
+        pieceElement.className = `piece ${pieceType}`;
+        pieceElement.innerHTML = `<img src="images/${imageFile}" alt="piece">`;
+        //Append the piece element to the square, placing it visually on the board.
         square.appendChild(pieceElement);
       }
     });
