@@ -3,6 +3,7 @@ const PLAYER_COLORS = {
   player1: '#f4f7fa',
   player2: '#34354e',
 };
+
 /*----- state variables -----*/
 const board = [
   [null, 1, null, 1, null, 1, null, 1],
@@ -27,8 +28,15 @@ const playerDisplay = document.getElementById('player');
 const infoDisplay = document.getElementById('info-display');
 const resetButton = document.getElementById('reset');
 const squares = document.querySelectorAll('.square');
+
 /*----- event listeners -----*/
 resetButton.addEventListener('click', init);
+function addSquareEventListener() {
+  squares.forEach((square) => {
+    square.addEventListener('click', handleSquareClick);
+  });
+}
+
 /*----- functions -----*/
 init();
 
@@ -36,6 +44,7 @@ function init() {
   renderPieces();
   currentPlayer = 1;
   updatePlayerDisplay();
+  addSquareEventListener();
 }
 
 function renderBoard() {}
@@ -88,7 +97,35 @@ function renderPieces() {
   });
 }
 
-// update display to say its ...player ... 's turn
+function handleSquareClick(e) {
+  const clickedSquare = e.target.closest('.square');
+  if (!clickedSquare) return; // Exit if no square was clicked.
+
+  const squareIndex = Array.from(squares).indexOf(clickedSquare);
+  const row = Math.floor(squareIndex / 8);
+  const col = squareIndex % 8;
+
+  if (board[row][col] === currentPlayer) {
+    // Highlight the square to show it's selected.
+    highlightSquare(clickedSquare);
+    // Calculate and highlight possible moves.
+    showPossibleMoves(row, col);
+  }
+}
+
+function highlightSquare(square) {
+  // Remove existing highlights
+  squares.forEach((square) => {
+    square.classList.remove('highlighted');
+  });
+
+  // Highlight the current square
+  square.classList.add('highlighted');
+}
+
+function showPossibleMoves(row, col) {}
+
+// function to update display to say its ...player ... 's turn
 function updatePlayerDisplay() {
   playerDisplay.textContent = currentPlayer === 1 ? 'Player 1' : 'Player 2';
   // playerDisplay.style.color = PLAYER_COLORS[`player${currentPlayer}`];
