@@ -113,17 +113,34 @@ function handleSquareClick(e) {
   }
 }
 
-function highlightSquare(square) {
+function clearHighlightSquare(square) {
   // Remove existing highlights
   squares.forEach((square) => {
     square.classList.remove('highlighted');
   });
-
-  // Highlight the current square
-  square.classList.add('highlighted');
 }
 
 function showPossibleMoves(row, col) {}
+
+//checking if position is witrhin the boards boundaries
+function inBoundry(row, col) {
+  let isInBoundry = row >= 0 && row < 8 && col >= 0 && col < 8;
+  return isInBoundry;
+}
+
+//checking if squares are empty
+function isEmpty(row, col) {
+  return board[row][col] === null;
+}
+
+// check is square contains opponents piece
+function isOpponent(row, col, currentPlayer) {
+  if (currentPlayer === 1) {
+    return board[row][col] === 2; // 2 is player 2
+  } else {
+    return board[row][col] === 1;
+  }
+}
 
 // function to update display to say its ...player ... 's turn
 function updatePlayerDisplay() {
