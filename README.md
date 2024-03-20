@@ -27,13 +27,13 @@ Created the classic game of checkers.
 
 [✅] players toggle back and forth after each move
 
-[ ] Winner is declared when game is over
+[✅]] Winner is declared when game is over
 
 ---
 
 #### Nice to have:
 
-[ ] possible moves are highlighted
+[✅]] possible moves are highlighted
 
 [ ] after 50 moves if there is no winner tie is declared
 
