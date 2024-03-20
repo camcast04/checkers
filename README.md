@@ -39,6 +39,6 @@ Created the classic game of checkers. 🏁
 
 ### Demo
 
-### Check it out for yourself here:
+### Check(er) it out for yourself here:
 
 [Live Site](https://cami-c-checkers.netlify.app/)
