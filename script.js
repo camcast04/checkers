@@ -135,9 +135,9 @@ function isValidMove(fromRow, fromCol, toRow, toCol, piece, isCaptureMove) {
     const middleCol = (fromCol + toCol) / 2;
     if (!isOpponent(middleRow, middleCol, currentPlayer)) return false;
   }
-
-  // Add additional validation as necessary, e.g., checking for backward moves if not a king
-  // For simplicity, these checks are omitted here but can be added based on game rules
+  // Directional movement check for non-king pieces
+  if (piece === 1 && toRow > fromRow) return false; // Player 1's pieces can't move downwards unless kinged
+  if (piece === 2 && toRow < fromRow) return false; // Player 2's pieces can't move upwards unless kinged
 
   return true;
 }
@@ -166,31 +166,27 @@ function showPossibleMoves(row, col) {
 
 // getting move direction
 function getMoveDirections(piece) {
-  // returning all the possible move directios maybe figure out how to make this not be a mess
-  if (piece === 1 || piece === 3) {
-    return piece === 1
-      ? [
-          { row: 1, col: -1 },
-          { row: 1, col: 1 },
-        ]
-      : [
-          { row: -1, col: -1 },
-          { row: -1, col: 1 },
-          { row: 1, col: -1 },
-          { row: 1, col: 1 },
-        ];
-  } else {
-    return piece === 2
-      ? [
-          { row: -1, col: -1 },
-          { row: -1, col: 1 },
-        ]
-      : [
-          { row: -1, col: -1 },
-          { row: -1, col: 1 },
-          { row: 1, col: -1 },
-          { row: 1, col: 1 },
-        ];
+  switch (piece) {
+    case 1: // Normal piece for Player 1 (Moving Upwards)
+      return [
+        { row: -1, col: -1 },
+        { row: -1, col: 1 },
+      ];
+    case 2: // Normal piece for Player 2 (Moving Downwards)
+      return [
+        { row: 1, col: -1 },
+        { row: 1, col: 1 },
+      ];
+    case 3: // Kinged piece for Player 1 (Moving both Upwards and Downwards)
+    case 4: // Kinged piece for Player 2 (Moving both Upwards and Downwards)
+      return [
+        { row: -1, col: -1 },
+        { row: -1, col: 1 },
+        { row: 1, col: -1 },
+        { row: 1, col: 1 },
+      ];
+    default:
+      return [];
   }
 }
 
