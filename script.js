@@ -118,26 +118,32 @@ function renderPieces() {
 }
 
 function isValidMove(fromRow, fromCol, toRow, toCol, piece, isCaptureMove) {
-  // Check if moving on a diagonal when moving diagonaly it is one to one
+  // Check if moving on a diagonal
   if (Math.abs(fromRow - toRow) !== Math.abs(fromCol - toCol)) return false;
 
   // Check if destination square is empty
   if (board[toRow][toCol] !== null) return false;
 
-  // Check if it's a simple move (ex.not a capture)
-  if (!isCaptureMove && Math.abs(fromRow - toRow) === 1) {
-    return true;
+  // Directional movement check for non-king pieces
+  if (piece === 1) {
+    // Player 1's non-king piece
+    if (toRow > fromRow) return false; // Cannot move downwards
+  } else if (piece === 2) {
+    // Player 2's non-king piece
+    if (toRow < fromRow) return false; // Cannot move upwards
   }
 
-  // For capture moves, checking if square is occupied
+  // For capture moves, check if the square is occupied by an opponent
   if (isCaptureMove) {
     const middleRow = (fromRow + toRow) / 2;
     const middleCol = (fromCol + toCol) / 2;
     if (!isOpponent(middleRow, middleCol, currentPlayer)) return false;
+    // Additional check: ensure the capture move is exactly 2 squares away
+    if (Math.abs(fromRow - toRow) !== 2) return false;
+  } else {
+    // Check if it's a simple move (not a capture)
+    if (Math.abs(fromRow - toRow) > 1) return false; // Simple move can only be 1 square away
   }
-  // Directional movement check for non-king pieces
-  if (piece === 1 && toRow > fromRow) return false; // Player 1's pieces can't move downwards unless kinged
-  if (piece === 2 && toRow < fromRow) return false; // Player 2's pieces can't move upwards unless kinged
 
   return true;
 }
@@ -293,21 +299,20 @@ function executeMove(fromRow, fromCol, toRow, toCol) {
   }
 
   // Check for and handle king-ing
-  // For Player 1, check if a piece has reached the top row
   if (movingPiece === 1 && toRow === 0) {
     board[toRow][toCol] = 3; // King the piece for Player 1
-  }
-  // For Player 2, check if a piece has reached the bottom row
-  if (movingPiece === 2 && toRow === 7) {
+  } else if (movingPiece === 2 && toRow === 7) {
     board[toRow][toCol] = 4; // King the piece for Player 2
   }
 
-  // Switch players
-  currentPlayer = currentPlayer === 1 ? 2 : 1;
-
-  // Update the board and player display
-  updatePlayerDisplay();
   renderPieces();
+
+  // Check for win condition after the move
+  if (!checkForWin()) {
+    // Switch players only if there's no winner
+    currentPlayer = currentPlayer === 1 ? 2 : 1;
+    updatePlayerDisplay();
+  }
 }
 
 function clearPieces() {
@@ -383,7 +388,35 @@ function kingPieces(row, col) {
   }
 }
 
+function checkForWin() {
+  let player1Pieces = 0;
+  let player2Pieces = 0;
+
+  // Loop through the board to count pieces for each player
+  board.forEach((row) => {
+    row.forEach((cell) => {
+      if (cell === 1 || cell === 3) player1Pieces++; // Assuming 1 and 3 represent Player 1's pieces and kings
+      if (cell === 2 || cell === 4) player2Pieces++; // Assuming 2 and 4 represent Player 2's pieces and kings
+    });
+  });
+
+  // Check win conditions
+  if (player1Pieces === 0) {
+    updateWinDisplay(2); // Player 2 wins
+    return true;
+  } else if (player2Pieces === 0) {
+    updateWinDisplay(1); // Player 1 wins
+    return true;
+  }
+  return false; // No winner yet
+}
+
+function updateWinDisplay(winner) {
+  playerDisplay.textContent = `Player ${winner} won!`; // Update display message
+  resetButton.textContent = 'Play Again'; // Change reset button text
+}
+
 // function to update display message to say its ...player ... 's turn
 function updatePlayerDisplay() {
-  playerDisplay.textContent = `Player ${currentPlayer}`;
+  playerDisplay.textContent = `It's Player ${currentPlayer}'s Turn`;
 }
