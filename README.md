@@ -42,3 +42,5 @@ Created the classic game of checkers. 🏁
 [click here](https://cami-c-checkers.netlify.app/)
 
 ### Check it out for yourself here:
+
+[Live Site](https://cami-c-checkers.netlify.app/)
