@@ -124,12 +124,12 @@ function isValidMove(fromRow, fromCol, toRow, toCol, piece, isCaptureMove) {
   // Check if destination square is empty
   if (board[toRow][toCol] !== null) return false;
 
-  // Check if it's a simple move (not a capture)
+  // Check if it's a simple move (ex.not a capture)
   if (!isCaptureMove && Math.abs(fromRow - toRow) === 1) {
-    return true; // For now, allow all single-step moves. Further validation may be needed based on game rules.
+    return true;
   }
 
-  // For capture moves, check that the jumped square contains an opponent's piece
+  // For capture moves, checking if square is occupied
   if (isCaptureMove) {
     const middleRow = (fromRow + toRow) / 2;
     const middleCol = (fromCol + toCol) / 2;
