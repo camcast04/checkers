@@ -232,8 +232,9 @@ function handleSquareClick(index) {
 }
 
 function executeMove(fromRow, fromCol, toRow, toCol) {
-  // Move the piece in board array
-  board[toRow][toCol] = board[fromRow][fromCol];
+  // Move the piece in the board array
+  const movingPiece = board[fromRow][fromCol];
+  board[toRow][toCol] = movingPiece;
   board[fromRow][fromCol] = null;
 
   // Handle capture
@@ -244,7 +245,14 @@ function executeMove(fromRow, fromCol, toRow, toCol) {
   }
 
   // Check for and handle king-ing
-  kingPieces(toRow, toCol);
+  // For Player 1, check if a piece has reached the top row
+  if (movingPiece === 1 && toRow === 0) {
+    board[toRow][toCol] = 3; // King the piece for Player 1
+  }
+  // For Player 2, check if a piece has reached the bottom row
+  if (movingPiece === 2 && toRow === 7) {
+    board[toRow][toCol] = 4; // King the piece for Player 2
+  }
 
   // Switch players
   currentPlayer = currentPlayer === 1 ? 2 : 1;
