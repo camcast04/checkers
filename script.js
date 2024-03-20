@@ -413,7 +413,7 @@ function checkForWin() {
 }
 
 function updateWinDisplay(winner) {
-  playerDisplay.textContent = `Player ${winner} won!🎉`; // Update display message
+  playerDisplay.textContent = `Player ${winner} won! 🎉`; // Update display message
   resetButton.textContent = 'Play Again'; // Change reset button text
 }
 
