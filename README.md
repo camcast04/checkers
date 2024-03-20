@@ -15,23 +15,25 @@ Created the classic game of checkers.
 
 ### Stretch Goals:
 
-[] Players can move pieces
+[✅] Players can move pieces
 
-[] Players can capture pieces
+[✅] Players can capture pieces
 
-[] Players can pieces will be king-ed when they reach the opposite size
+[✅] Players can pieces will be king-ed when they reach the opposite size
 
-[] message indicating what player is currently active
+[✅] message indicating what player is currently active
 
-[] players toggle back and forth automatically
+[✅] players toggle back and forth automatically
+
+[ ] Winner is declared when game is over
 
 ---
 
 #### Nice to have:
 
-[] possible moves are highlighted
+[ ] possible moves are highlighted
 
-[] after 50 moves if there is no winner tie is declared
+[ ] after 50 moves if there is no winner tie is declared
 
 ### Demo
 
