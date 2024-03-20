@@ -2,7 +2,7 @@
 
 ### About The Project
 
-Created the classic game of checkers.
+Created the classic game of checkers. 🏁
 
 ### Technology used:
 
