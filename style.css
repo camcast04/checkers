@@ -7,7 +7,7 @@
 }
 
 body {
-  background-color: #f4f7fa;
+  background-color: #f4f7fae6;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,7 +29,22 @@ h1 {
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  box-shadow: rgba(100, 100, 100, 0.2) 0px 7px 29px 0px;
+  border-radius: 7px;
+  border: 6px solid #f4f7fa;
+}
+
+#gameboard .square:first-child {
+  border-top-left-radius: 7px;
+}
+#gameboard .square:nth-child(8) {
+  border-top-right-radius: 7px;
+}
+#gameboard .square:nth-last-child(8) {
+  border-bottom-left-radius: 7px;
+}
+#gameboard .square:last-child {
+  border-bottom-right-radius: 7px;
 }
 
 .square {
