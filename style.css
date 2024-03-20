@@ -51,10 +51,16 @@ h1 {
 .square {
   width: 12.5%;
   height: 12.5%;
-  float: left;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative; /* Ensure square maintains its size */
+}
+
+.square img {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain; /* This ensures the image scales within the square */
 }
 
 .light img {

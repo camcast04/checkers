@@ -18,9 +18,7 @@ let board = [
 
 // Switch players
 let currentPlayer = 1;
-currentPlayer = currentPlayer === 1 ? 2 : 1;
-
-// let possibleMoves = [];
+let selectedPiece = { isSelected: false, row: null, col: null };
 
 /*----- cached elements  -----*/
 const lightPieces = document.querySelectorAll('.light');
@@ -34,14 +32,12 @@ const squares = document.querySelectorAll('.square');
 
 /*----- event listeners -----*/
 resetButton.addEventListener('click', init);
-gameBoard.addEventListener('dragstart', handleDragStart, false);
-gameBoard.addEventListener('dragover', handleDragOver, false);
-gameBoard.addEventListener('drop', handleDrop, false);
-gameBoard.addEventListener('dragend', handleDragEnd, false);
 
 function addSquareEventListener() {
-  squares.forEach((square) => {
-    square.addEventListener('click', handleSquareClick);
+  squares.forEach((square, index) => {
+    square.addEventListener('click', function () {
+      handleSquareClick(index);
+    });
   });
 }
 
@@ -52,22 +48,21 @@ function init() {
   renderPieces();
   currentPlayer = 1;
   updatePlayerDisplay();
-  // addSquareEventListener();
+  addSquareEventListener();
 }
 
 document.addEventListener('DOMContentLoaded', init);
 
 function resetBoard() {
-  // Properly re-initialize the board for a new game
   board = [
-    [null, 1, null, 1, null, 1, null, 1],
-    [1, null, 1, null, 1, null, 1, null],
-    [null, 1, null, 1, null, 1, null, 1],
-    [null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null],
-    [2, null, 2, null, 2, null, 2, null],
     [null, 2, null, 2, null, 2, null, 2],
     [2, null, 2, null, 2, null, 2, null],
+    [null, 2, null, 2, null, 2, null, 2],
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    [1, null, 1, null, 1, null, 1, null],
+    [null, 1, null, 1, null, 1, null, 1],
+    [1, null, 1, null, 1, null, 1, null],
   ];
 }
 
@@ -93,25 +88,25 @@ function renderPieces() {
         switch (cell) {
           case 1:
             pieceType = 'light';
-            imageFile = 'light-piece.png';
+            imageFile = 'images/light-piece.png'; // Ensure path is correct
             break;
           case 2:
             pieceType = 'dark';
-            imageFile = 'dark-piece.png';
+            imageFile = 'images/dark-piece.png'; // Ensure path is correct
             break;
           case 3: // kinged
             pieceType = 'light king';
-            imageFile = 'king-light.png';
+            imageFile = 'images/king-light.png'; // Ensure path is correct
             break;
           case 4: // kinged
             pieceType = 'dark king';
-            imageFile = 'king-dark.png';
+            imageFile = 'images/king-dark.png'; // Ensure path is correct
             break;
         }
 
         // Set the class of the piece element to include both 'piece' and its specific type ('light', 'dark', 'light king', 'dark king').
         pieceElement.className = `piece ${pieceType}`;
-        pieceElement.innerHTML = `<img src="images/${imageFile}" alt="piece">`;
+        pieceElement.innerHTML = `<img src="${imageFile}" alt="pieceType">`;
         //indicate player 1 or 2
         pieceElement.setAttribute('data-piece', cell);
         pieceElement.setAttribute('data-position', `${rowIdx},${cellIdx}`);
@@ -120,34 +115,6 @@ function renderPieces() {
       }
     });
   });
-}
-
-function handleDragStart(e) {
-  if (!e.target.className.includes('piece')) return;
-  e.dataTransfer.setData('text/plain', e.target.dataset.position);
-  setTimeout(() => (e.target.style.opacity = '0.4'), 0);
-}
-
-function handleDragOver(e) {
-  e.preventDefault(); // Necessary to allow dropping / prevents default behavior
-}
-
-function handleDrop(e) {
-  e.preventDefault();
-  const fromPosition = e.dataTransfer
-    .getData('text/plain')
-    .split(',')
-    .map(Number);
-  const toSquare = e.target.closest('.square');
-  const toIndex = Array.from(squares).indexOf(toSquare);
-  const toPosition = [Math.floor(toIndex / 8), toIndex % 8];
-
-  executeMove(fromPosition[0], fromPosition[1], toPosition[0], toPosition[1]);
-}
-
-function handleDragEnd(e) {
-  e.target.style.opacity = '1';
-  renderPieces();
 }
 
 function isValidMove(fromRow, fromCol, toRow, toCol, piece, isCaptureMove) {
@@ -227,8 +194,45 @@ function getMoveDirections(piece) {
   }
 }
 
+function handleSquareClick(index) {
+  const row = Math.floor(index / 8);
+  const col = index % 8;
+  const piece = board[row][col];
+
+  // Check if a piece is currently selected
+  if (!selectedPiece.isSelected) {
+    // If the clicked square contains the current player's piece, select it
+    if (
+      (piece === 1 && currentPlayer === 1) ||
+      (piece === 2 && currentPlayer === 2)
+    ) {
+      selectedPiece = { isSelected: true, row, col };
+      highlightSquare(row, col); // Optional: visually indicate the selected piece
+    }
+  } else {
+    // If a piece is already selected, attempt to move it to the clicked square
+    if (
+      isValidMove(
+        selectedPiece.row,
+        selectedPiece.col,
+        row,
+        col,
+        board[selectedPiece.row][selectedPiece.col],
+        false
+      )
+    ) {
+      executeMove(selectedPiece.row, selectedPiece.col, row, col);
+      clearHighlights(); // Clear any highlights
+    }
+    selectedPiece = { isSelected: false, row: null, col: null }; // Reset selectedPiece
+  }
+
+  renderPieces(); // Re-render pieces to reflect any changes
+  updatePlayerDisplay(); // Update the display to show whose turn it is
+}
+
 function executeMove(fromRow, fromCol, toRow, toCol) {
-  // Move the piece
+  // Move the piece in board array
   board[toRow][toCol] = board[fromRow][fromCol];
   board[fromRow][fromCol] = null;
 
@@ -239,16 +243,24 @@ function executeMove(fromRow, fromCol, toRow, toCol) {
     board[middleRow][middleCol] = null; // Remove the captured piece
   }
 
-  // Check for and handle kinging
+  // Check for and handle king-ing
   kingPieces(toRow, toCol);
 
   // Switch players
   currentPlayer = currentPlayer === 1 ? 2 : 1;
 
   // Update the board and player display
-  renderPieces();
   updatePlayerDisplay();
-  clearHighlights(); // remove move highlights
+  renderPieces();
+}
+
+function clearPieces() {
+  // Iterate over all squares and remove child nodes that are pieces
+  squares.forEach((square) => {
+    while (square.firstChild) {
+      square.removeChild(square.firstChild);
+    }
+  });
 }
 
 function checkSimpleMove(row, col, dir) {
