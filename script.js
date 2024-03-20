@@ -142,26 +142,55 @@ function isValidMove(fromRow, fromCol, toRow, toCol, piece, isCaptureMove) {
   return true;
 }
 
-function highlightSquare(row, col) {
+function highlightSelectedPiece(row, col, addHighlight) {
   const index = row * 8 + col;
-  squares[index].classList.add('highlighted');
+  const square = squares[index];
+  const piece = square.querySelector('.piece');
+  if (piece) {
+    if (addHighlight) {
+      piece.classList.add('selected-piece');
+    } else {
+      piece.classList.remove('selected-piece');
+    }
+  }
+}
+
+function highlightSquare(row, col, isMoveIndicator = false) {
+  const index = row * 8 + col;
+  const square = squares[index];
+  if (isMoveIndicator) {
+    const moveIndicator = document.createElement('div');
+    moveIndicator.className = 'possible-move';
+    square.appendChild(moveIndicator);
+  } else {
+    square.classList.add('highlighted');
+  }
 }
 
 function clearHighlights() {
   squares.forEach((square) => {
     square.classList.remove('highlighted');
+    const moveIndicators = square.querySelectorAll('.possible-move');
+    moveIndicators.forEach((indicator) => square.removeChild(indicator));
   });
+  // Remove selection highlight
+  const selectedPieces = document.querySelectorAll('.selected-piece');
+  selectedPieces.forEach((piece) => piece.classList.remove('selected-piece'));
 }
+
 function showPossibleMoves(row, col) {
   const piece = board[row][col];
   const directions = getMoveDirections(piece);
 
-  clearHighlights(); // Correct function name
+  clearHighlights(); // Clears previous highlights and move indicators
 
   directions.forEach((dir) => {
-    checkSimpleMove(row, col, dir);
-    checkCapturingMove(row, col, dir);
+    checkSimpleMove(row, col, dir, true); // true indicates it's checking for a possible move
+    checkCapturingMove(row, col, dir, true); // Same here
   });
+
+  // Highlight the selected piece
+  highlightSelectedPiece(row, col, true);
 }
 
 // getting move direction
@@ -191,22 +220,36 @@ function getMoveDirections(piece) {
 }
 
 function handleSquareClick(index) {
-  const row = Math.floor(index / 8); // row number of cell in grid (every multiple of 8 new row)
+  const row = Math.floor(index / 8);
   const col = index % 8;
   const piece = board[row][col];
 
-  // Check if a piece is currently selected
-  if (!selectedPiece.isSelected) {
-    // If the clicked square contains the current player's piece, select it
-    if (
-      (piece === 1 && currentPlayer === 1) ||
-      (piece === 2 && currentPlayer === 2)
-    ) {
-      selectedPiece = { isSelected: true, row, col };
-      highlightSquare(row, col);
-    }
-  } else {
-    // If a piece is already selected, attempt to move it to the clicked square
+  // Deselect if the same piece is clicked again
+  if (
+    selectedPiece.isSelected &&
+    selectedPiece.row === row &&
+    selectedPiece.col === col
+  ) {
+    clearHighlights();
+    selectedPiece = { isSelected: false, row: null, col: null };
+    return;
+  }
+
+  // Select a piece if none is selected and it belongs to the current player
+  if (
+    (!selectedPiece.isSelected &&
+      piece &&
+      (piece === 1 || piece === 3) &&
+      currentPlayer === 1) ||
+    ((piece === 2 || piece === 4) && currentPlayer === 2)
+  ) {
+    selectedPiece = { isSelected: true, row, col };
+    showPossibleMoves(row, col);
+    return;
+  }
+
+  // Attempt to move if a piece is selected
+  if (selectedPiece.isSelected) {
     if (
       isValidMove(
         selectedPiece.row,
@@ -214,17 +257,26 @@ function handleSquareClick(index) {
         row,
         col,
         board[selectedPiece.row][selectedPiece.col],
-        false
+        Math.abs(selectedPiece.row - row) === 2
       )
     ) {
       executeMove(selectedPiece.row, selectedPiece.col, row, col);
-      clearHighlights(); // Clear any highlights
+      clearHighlights();
+      selectedPiece = { isSelected: false, row: null, col: null };
+    } else {
+      // Invalid move, so clear selection and highlights, allowing a new selection
+      clearHighlights();
+      selectedPiece = { isSelected: false, row: null, col: null };
+      if (
+        (piece && (piece === 1 || piece === 3) && currentPlayer === 1) ||
+        ((piece === 2 || piece === 4) && currentPlayer === 2)
+      ) {
+        // A piece of the current player was clicked, select it and show moves
+        selectedPiece = { isSelected: true, row, col };
+        showPossibleMoves(row, col);
+      }
     }
-    selectedPiece = { isSelected: false, row: null, col: null }; // Reset selectedPiece
   }
-
-  renderPieces(); // Re-render pieces to reflect changes
-  updatePlayerDisplay(); // Update the display to show whose turn it is
 }
 
 function executeMove(fromRow, fromCol, toRow, toCol) {
@@ -267,14 +319,13 @@ function clearPieces() {
   });
 }
 
-function checkSimpleMove(row, col, dir) {
-  //calculating new row by adding the direction
+function checkSimpleMove(row, col, dir, showIndicator = false) {
   const newRow = row + dir.row;
   const newCol = col + dir.col;
-  // checking to see if it is within boundry of the board
   if (inBoundry(newRow, newCol) && isEmpty(newRow, newCol)) {
-    // highlight the square if the move is valid
-    highlightSquare(newRow, newCol);
+    if (showIndicator) {
+      highlightSquare(newRow, newCol, true); // True for showing move indicator
+    }
   }
 }
 
@@ -316,7 +367,9 @@ function checkCapturingMove(row, col, dir) {
     isEmpty(captureRow, captureCol) &&
     isOpponent(opponentRow, opponentCol, currentPlayer)
   ) {
-    highlightSquare(captureRow, captureCol);
+    if (showIndicator) {
+      highlightSquare(captureRow, captureCol, true); // True for showing move indicator
+    }
   }
 }
 
