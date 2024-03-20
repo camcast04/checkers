@@ -15,15 +15,17 @@ Created the classic game of checkers.
 
 ### Stretch Goals:
 
-[✅] Players can move pieces
+[✅] Make the game resizable
 
-[✅] Players can capture pieces
+[✅] Players can move pieces (only diagonally)
 
-[✅] Players can pieces will be king-ed when they reach the opposite size
+[✅] Players can capture pieces (jumping over opponents piece)
 
-[✅] message indicating what player is currently active
+[✅] Player's pieces will be king-ed when they reach the opposite side
 
-[✅] players toggle back and forth automatically
+[✅] message indicating what player is currently active (whose turn it is)
+
+[✅] players toggle back and forth after each move
 
 [ ] Winner is declared when game is over
 

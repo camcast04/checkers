@@ -118,7 +118,7 @@ function renderPieces() {
 }
 
 function isValidMove(fromRow, fromCol, toRow, toCol, piece, isCaptureMove) {
-  // Check if moving on a diagonal
+  // Check if moving on a diagonal when moving diagonaly it is one to one
   if (Math.abs(fromRow - toRow) !== Math.abs(fromCol - toCol)) return false;
 
   // Check if destination square is empty
