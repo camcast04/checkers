@@ -347,10 +347,11 @@ function isEmpty(row, col) {
 
 // check if square contains opponents piece
 function isOpponent(row, col, currentPlayer) {
+  const cell = board[row][col];
   if (currentPlayer === 1) {
-    return board[row][col] === 2; // 2 is player 2
+    return cell === 2 || cell === 4; // 2 is player 2 & 4 is player 2 kinged
   } else {
-    return board[row][col] === 1;
+    return cell === 1 || cell === 3;
   }
 }
 
@@ -384,7 +385,7 @@ function kingPieces(row, col) {
     (currentPlayer === 1 && row === 7) ||
     (currentPlayer === 2 && row === 0)
   ) {
-    board[row][col] = currentPlayer === 1 ? 3 : 4; // Assuming 3 and 4 represent kings for players 1 and 2, respectively
+    board[row][col] = currentPlayer === 1 ? 3 : 4; // 3 and 4 represent kings for players 1 and 2, respectively
   }
 }
 
@@ -412,7 +413,7 @@ function checkForWin() {
 }
 
 function updateWinDisplay(winner) {
-  playerDisplay.textContent = `Player ${winner} won!`; // Update display message
+  playerDisplay.textContent = `Player ${winner} won!🎉`; // Update display message
   resetButton.textContent = 'Play Again'; // Change reset button text
 }
 
