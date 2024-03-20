@@ -191,7 +191,7 @@ function getMoveDirections(piece) {
 }
 
 function handleSquareClick(index) {
-  const row = Math.floor(index / 8);
+  const row = Math.floor(index / 8); // row number of cell in grid (every multiple of 8 new row)
   const col = index % 8;
   const piece = board[row][col];
 
@@ -203,7 +203,7 @@ function handleSquareClick(index) {
       (piece === 2 && currentPlayer === 2)
     ) {
       selectedPiece = { isSelected: true, row, col };
-      highlightSquare(row, col); // Optional: visually indicate the selected piece
+      highlightSquare(row, col);
     }
   } else {
     // If a piece is already selected, attempt to move it to the clicked square
@@ -223,7 +223,7 @@ function handleSquareClick(index) {
     selectedPiece = { isSelected: false, row: null, col: null }; // Reset selectedPiece
   }
 
-  renderPieces(); // Re-render pieces to reflect any changes
+  renderPieces(); // Re-render pieces to reflect changes
   updatePlayerDisplay(); // Update the display to show whose turn it is
 }
 
@@ -268,9 +268,12 @@ function clearPieces() {
 }
 
 function checkSimpleMove(row, col, dir) {
+  //calculating new row by adding the direction
   const newRow = row + dir.row;
   const newCol = col + dir.col;
+  // checking to see if it is within boundry of the board
   if (inBoundry(newRow, newCol) && isEmpty(newRow, newCol)) {
+    // highlight the square if the move is valid
     highlightSquare(newRow, newCol);
   }
 }
@@ -296,12 +299,18 @@ function isOpponent(row, col, currentPlayer) {
 }
 
 function checkCapturingMove(row, col, dir) {
-  // Move two squares in the direction to check for a capture move
+  // Move two squares in the direction to check for a capture move (calc two squares away)
   const captureRow = row + dir.row * 2;
   const captureCol = col + dir.col * 2;
   const opponentRow = row + dir.row;
   const opponentCol = col + dir.col;
-
+  /*
+    in order to capture: 
+  1. The position must be within the boundaries of the board - use inBoundry.
+  2. The capture position must be empty use isEmpty.
+  3. The square directly between the starting position and the capture position must contain
+     an opponent's piece (duh).
+*/
   if (
     inBoundry(captureRow, captureCol) &&
     isEmpty(captureRow, captureCol) &&
