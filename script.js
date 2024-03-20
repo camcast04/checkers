@@ -183,11 +183,21 @@ function showPossibleMoves(row, col) {
   const directions = getMoveDirections(piece);
 
   clearHighlights(); // Clears previous highlights and move indicators
-
+  let capturePossible = false;
   directions.forEach((dir) => {
-    checkSimpleMove(row, col, dir, true); // true indicates it's checking for a possible move
-    checkCapturingMove(row, col, dir, true); // Same here
+    const simpleMovePossible = checkSimpleMove(row, col, dir, true); // true indicates it's checking for a possible move
+    const captureMovePossible = checkCapturingMove(row, col, dir, true); // Same here
+    if (captureMovePossible) {
+      capturePossible = true;
+    }
   });
+
+  if (capturePossible) {
+    clearHighlights();
+    directions.forEach((dir) => {
+      checkCapturingMove(row, col, dir, true); // Re-highlight only capture moves
+    });
+  }
 
   // Highlight the selected piece
   highlightSelectedPiece(row, col, true);
