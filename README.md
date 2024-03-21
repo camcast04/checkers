@@ -4,6 +4,8 @@
 
 Created the classic game of checkers. 🏁
 
+![image of the game](https://imgur.com/a/2Kz8gvc)
+
 ### Technology used:
 
 - JavaScript
