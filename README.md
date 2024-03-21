@@ -49,6 +49,8 @@ Created the classic game of checkers. 🏁
 
 ### Next Steps:
 
+[ ] forced Captures
+
 [ ] drag and drop instead of clicking
 
 [ ] movement animations
