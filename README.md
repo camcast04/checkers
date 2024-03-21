@@ -37,8 +37,17 @@ Created the classic game of checkers. 🏁
 
 [ ] after 50 moves if there is no winner tie is declared
 
-### Demo
+---
 
 ### Check(er) it out for yourself here:
 
 [Live Site](https://cami-c-checkers.netlify.app/)
+
+### Demo
+
+---
+
+### Next Steps:
+
+[] drag and drop instead of clicking
+[] movement animations
