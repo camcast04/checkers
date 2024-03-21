@@ -4,7 +4,7 @@
 
 Created the classic game of checkers. 🏁
 
-![image of the game](https://imgur.com/a/2Kz8gvc)
+![image of the game](https://i.imgur.com/fLcjgnR.png)
 
 ### Technology used:
 
