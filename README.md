@@ -49,5 +49,5 @@ Created the classic game of checkers. 🏁
 
 ### Next Steps:
 
-[] drag and drop instead of clicking
-[] movement animations
+[ ] drag and drop instead of clicking
+[ ] movement animations
