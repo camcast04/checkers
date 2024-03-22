@@ -3,6 +3,7 @@
 ### About The Project
 
 Created the classic game of checkers. 🏁
+[How to play!](https://www.usatoday.com/story/graphics/2023/01/23/how-to-play-checkers-rules-strategy/10795787002/)
 
 ![image of the game](https://i.imgur.com/fLcjgnR.png)
 
