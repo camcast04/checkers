@@ -201,7 +201,7 @@ function showPossibleMoves(row, col) {
   clearHighlights(); // Clears previous highlights and move indicators
 
   directions.forEach((dir) => {
-    checkSimpleMove(row, col, dir, true); // true indicates it's checking for a possible move
+    checkSimpleMove(row, col, dir, true); // true = checking for a possible move
     checkCapturingMove(row, col, dir, true); // Same here
   });
 
@@ -212,23 +212,28 @@ function showPossibleMoves(row, col) {
 // getting move direction
 function getMoveDirections(piece) {
   switch (piece) {
-    case 1: // Normal piece for Player 1 (Moving Upwards)
+    case 1: // Normal piece for Player 1 (Moving Up)
+      // Player 1's normal pieces move up on the board. The return value is an array of two objects,
+      // each representing a direction in which the piece can move: diagonally left up and diagonally right up.
       return [
         { row: -1, col: -1 },
         { row: -1, col: 1 },
       ];
-    case 2: // Normal piece for Player 2 (Moving Downwards)
+    case 2: // Normal piece for Player 2 (Moving Down)
+      // Player 2's normal pieces move down. Similar to 1, but opposite.
+      // The directions are diagonally left down and diagonally right down.
       return [
         { row: 1, col: -1 },
         { row: 1, col: 1 },
       ];
-    case 3: // Kinged piece for Player 1 (Moving both Upwards and Downwards)
-    case 4: // Kinged piece for Player 2 (Moving both Upwards and Downwards)
+    case 3: // Kinged piece for Player 1 (Up and Down)
+    case 4: // Kinged piece for Player 2 (Moving up and down)
+      //King pieces move both up and a down so it has 4 possible moves
       return [
-        { row: -1, col: -1 },
-        { row: -1, col: 1 },
-        { row: 1, col: -1 },
-        { row: 1, col: 1 },
+        { row: -1, col: -1 }, //left up
+        { row: -1, col: 1 }, //right up
+        { row: 1, col: -1 }, //left down
+        { row: 1, col: 1 }, //right down
       ];
     default:
       return [];
