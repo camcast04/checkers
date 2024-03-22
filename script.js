@@ -21,18 +21,15 @@ let currentPlayer = 1;
 let selectedPiece = { isSelected: false, row: null, col: null };
 
 /*----- cached elements  -----*/
-const lightPieces = document.querySelectorAll('.light');
-const darkPieces = document.querySelectorAll('.dark');
 const blackSquares = document.querySelectorAll('.black');
-const gameBoard = document.getElementById('gameboard');
 const playerDisplay = document.getElementById('player');
-const infoDisplay = document.getElementById('info-display');
 const resetButton = document.getElementById('reset');
 const squares = document.querySelectorAll('.square');
 
 /*----- event listeners -----*/
 resetButton.addEventListener('click', init);
 
+// add even listeners to every square
 function addSquareEventListener() {
   squares.forEach((square, index) => {
     square.addEventListener('click', function () {
@@ -44,6 +41,13 @@ function addSquareEventListener() {
 /*----- functions -----*/
 
 function init() {
+  /* 
+  to do:
+  - reset board to initial state 
+  - render pieces based on current state of board 
+  - set player to player one 
+  - add click event listeners to every square on the board 
+  */
   resetBoard();
   renderPieces();
   currentPlayer = 1;
@@ -149,10 +153,16 @@ function isValidMove(fromRow, fromCol, toRow, toCol, piece, isCaptureMove) {
 }
 
 function highlightSelectedPiece(row, col, addHighlight) {
+  //calculate the index of the square in the squares list based on its row and column
+  // convert 2d position into 1d
   const index = row * 8 + col;
+  //access the squre element using calculation
   const square = squares[index];
+  //find piece within square
   const piece = square.querySelector('.piece');
+  //check if piece exists or if square is empty
   if (piece) {
+    // add hilight gets applied if there is a piece so if it isnt there no piece
     if (addHighlight) {
       piece.classList.add('selected-piece');
     } else {
@@ -226,8 +236,13 @@ function getMoveDirections(piece) {
 }
 
 function handleSquareClick(index) {
+  // Calculate the row of the clicked square by dividing the index by 8 (the width of the board)
+  // and taking the floor of the result to get a whole number.
   const row = Math.floor(index / 8);
+  // Calculate the column of the clicked square by getting the remainder of the index divided by 8,
+  // which gives the column position within the row.
   const col = index % 8;
+  // Retrieve the piece type (if any) at the clicked square's row and column from the board array.
   const piece = board[row][col];
 
   // Deselect if the same piece is clicked again
@@ -241,20 +256,22 @@ function handleSquareClick(index) {
     return;
   }
 
-  // Select a piece if none is selected and it belongs to the current player
+  // If no piece is currently selected and the clicked square contains a piece that belongs to the current player,
+  // select the piece. This involves setting the selectedPiece object and showing possible moves.
   if (
     (!selectedPiece.isSelected &&
       piece &&
-      (piece === 1 || piece === 3) &&
+      (piece === 1 || piece === 3) && // Check if the piece is player 1's (normal or kin
       currentPlayer === 1) ||
-    ((piece === 2 || piece === 4) && currentPlayer === 2)
+    ((piece === 2 || piece === 4) && currentPlayer === 2) // Or if the piece is player 2's (normal or king)
   ) {
     selectedPiece = { isSelected: true, row, col };
-    showPossibleMoves(row, col);
+    showPossibleMoves(row, col); // Display legal moves for the selected piece
     return;
   }
 
-  // Attempt to move if a piece is selected
+  // If a piece is already selected and the player attempts to move it,
+  // check if the attempted move is valid.
   if (selectedPiece.isSelected) {
     if (
       isValidMove(
@@ -262,11 +279,14 @@ function handleSquareClick(index) {
         selectedPiece.col,
         row,
         col,
-        board[selectedPiece.row][selectedPiece.col],
-        Math.abs(selectedPiece.row - row) === 2
+        board[selectedPiece.row][selectedPiece.col], // Pass the type of the selected piece
+        Math.abs(selectedPiece.row - row) === 2 // Check if the move is a capturing move by seeing if the row difference is 2 **
       )
     ) {
+      // Execute the move if it's valid, clear highlights, and reset the selected piece.
       executeMove(selectedPiece.row, selectedPiece.col, row, col);
+      // If the move is invalid, clear the current selection and highlights,
+      // then check if another piece of the current player was clicked. If so, select it and show possible moves.
       clearHighlights();
       selectedPiece = { isSelected: false, row: null, col: null };
     } else {
@@ -277,7 +297,8 @@ function handleSquareClick(index) {
         (piece && (piece === 1 || piece === 3) && currentPlayer === 1) ||
         ((piece === 2 || piece === 4) && currentPlayer === 2)
       ) {
-        // A piece of the current player was clicked, select it and show moves
+        // If the clicked square has a piece belonging to the current player,
+        // select this new piece and show its possible moves.
         selectedPiece = { isSelected: true, row, col };
         showPossibleMoves(row, col);
       }
@@ -286,21 +307,26 @@ function handleSquareClick(index) {
 }
 
 function executeMove(fromRow, fromCol, toRow, toCol) {
-  // Move the piece in the board array
+  // Retrieve the piece from its original position on the board and store it in a variable.
   const movingPiece = board[fromRow][fromCol];
+  // Place the piece at its new position on the board.
   board[toRow][toCol] = movingPiece;
+  // Clear the piece's original position on the board.
   board[fromRow][fromCol] = null;
 
   // Handle capture
   if (Math.abs(fromRow - toRow) === 2) {
+    // Calculate the row and column of the jumped piece by averaging the start and end positions.
     const middleRow = (fromRow + toRow) / 2;
     const middleCol = (fromCol + toCol) / 2;
-    board[middleRow][middleCol] = null; // Remove the captured piece
+    // Remove the captured piece
+    board[middleRow][middleCol] = null;
   }
 
-  // Check for and handle king-ing
+  // Check if a piece should be "kinged". If a player 1 piece reaches the far end (row 0), it becomes a king (represented by 3).
   if (movingPiece === 1 && toRow === 0) {
     board[toRow][toCol] = 3; // King the piece for Player 1
+    // If a player 2 piece reaches the far end (row 7), it becomes a king (represented by 4).
   } else if (movingPiece === 2 && toRow === 7) {
     board[toRow][toCol] = 4; // King the piece for Player 2
   }
@@ -316,8 +342,9 @@ function executeMove(fromRow, fromCol, toRow, toCol) {
 }
 
 function clearPieces() {
-  // Iterate over all squares and remove child nodes that are pieces
+  // Loop over all squares and remove child nodes that are pieces
   squares.forEach((square) => {
+    // For each square, check if it has a piece (which is the child) and remove it.
     while (square.firstChild) {
       square.removeChild(square.firstChild);
     }
